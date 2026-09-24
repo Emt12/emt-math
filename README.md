@@ -25,10 +25,20 @@ analysis, and benchmarks.
 
 ## Current Status
 
-EMT-MATH is in its initial infrastructure phase. The development environment,
-repository structure, compiler flags, test workflow, and debugging tools are
-currently being established. The public vector and matrix APIs have not been
-implemented yet.
+The project infrastructure and first vector milestone are in place. Vector
+lifecycle management currently includes overflow-safe allocation, explicit
+zero initialization, destruction, empty-state restoration, and lifecycle
+tests. Bounded element access and mathematical vector operations are next.
+
+The matrix module has not been started yet.
+
+## Documentation
+
+- [Technical roadmap](docs/ROADMAP.md)
+- [Offline coding plan](docs/OFFLINE_PLAN.md)
+- [Architecture decisions](docs/DECISIONS.md)
+- [Current project state](docs/ai/PROJECT_STATE.md)
+- [Codex–Claude communication protocol](docs/ai/README.md)
 
 ## Planned Scope
 
@@ -46,20 +56,28 @@ The project will grow incrementally through the following areas:
 
 ## Building
 
-The project currently uses a manual development build while the Makefile is
-being designed:
+Build the development executable with:
 
 ```sh
-mkdir -p build
-gcc -std=c99 -Wall -Wextra -Wpedantic -g3 -O0 \
-    src/main.c \
-    -o build/emt-math
+make
 ```
 
 Run the executable with:
 
 ```sh
-./build/emt-math
+make run
+```
+
+Build and run every test executable with:
+
+```sh
+make test
+```
+
+Remove generated build artifacts with:
+
+```sh
+make clean
 ```
 
 ## Project Principles
