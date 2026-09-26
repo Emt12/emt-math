@@ -21,7 +21,7 @@ dokunulmadı):
 - `make all test` (GCC): warning yok, 7/7 PASS.
 - Ek olarak `-Wconversion -Wshadow -O2`: `vector.c` ve testlerde warning yok.
 - ASan + UBSan, leak detection **açık**: temiz.
-- Sınır denemesi: `initVector(&v, SIZE_MAX / sizeof(double))` çağrısı
+- Sınır denemesi: `emt_vec_init(&v, SIZE_MAX / sizeof(double))` çağrısı
   `ERROR_ALLOCATION` döndü ve `v` `{0, NULL}` olarak kaldı. Overflow kontrolünde
   off-by-one yok ve failure atomicity doğru.
 - Aynı çağrı ASan altında **abort ediyor** ("requested allocation size exceeds
@@ -41,7 +41,7 @@ dokunulmadı):
   ve sınır değerinde de doğru çalışıyor.
 - `malloc` sonucu önce geçici pointer'a alınıyor, alanlar ancak başarıdan sonra
   commit ediliyor.
-- `destroyVector` NULL-safe, idempotent ve canonical empty state'e dönüyor.
+- `emt_vec_destroy` NULL-safe, idempotent ve canonical empty state'e dönüyor.
 - `size == 0` durumunda `malloc(0)` hiç çağrılmıyor; implementation-defined
   davranış tamamen devre dışı.
 - D-006'ya uygun olarak `0.0` açıkça atanıyor.
@@ -57,7 +57,7 @@ destroy, stack'te struct. D-003 ile de tutarlı.
 
 1. **Non-owning view:** Matrix satırı veya alt-vector gibi başkasının belleğini
    gösteren bir nesne gerekecek. Mevcut struct "sahibi değilim" bilgisini
-   taşıyamıyor; bir view'a `destroyVector` çağrılırsa invalid free oluşur. Bu
+   taşıyamıyor; bir view'a `emt_vec_destroy` çağrılırsa invalid free oluşur. Bu
    karar Matrix'ten önce verilmeli. Owner flag yerine ayrı bir view tipi
    önerilir.
 2. **Operasyonlarda allocation:** add/dot/norm gibi operasyonlar kendi içinde
@@ -73,11 +73,11 @@ hepsi `init` tarafından mutasyon olmadan reddediliyor.
 
 Library'nin **tespit edemediği**, kontrat ihlali sonucu UB oluşturan durumlar:
 
-1. `Vector v;` ile başlatılmamış otomatik nesne: `initVector` indeterminate
+1. `EmtVector v;` ile başlatılmamış otomatik nesne: `emt_vec_init` indeterminate
    değerleri okur. Bu C99'da UB'dir (J.2, automatic storage + indeterminate
    value). Pratikte ya sahte `ERROR_INVALID_STATE` alınır ya da çağrı "şans
    eseri" geçer. Kod bunu çözemez; sadece dokümantasyon çözer.
-2. Shallow copy (`Vector b = a;`) sonrasında iki destroy: double free.
+2. Shallow copy (`EmtVector b = a;`) sonrasında iki destroy: double free.
 3. `data` alanına elle malloc dışı bir pointer yazılması ve ardından destroy:
    invalid free.
 4. Destroy'dan önce saklanan bir `double *p = v.data` pointer'ının sonradan
@@ -93,7 +93,7 @@ kontrat metninde açıkça yazmalı (bkz. kullanıcı kararları).
 
 - **R1 — Include guard:** `VECTOR_H` fazla jenerik. Aynı translation unit'te
   aynı guard'ı kullanan başka bir header, bunlardan birini sessizce devre dışı
-  bırakır ve kafa karıştırıcı "unknown type Vector" hatalarına yol açar. Ayrıca
+  bırakır ve kafa karıştırıcı "unknown type EmtVector" hatalarına yol açar. Ayrıca
   `#endif` sonrasındaki `/*EMT_VECTOR_H */` yorumu gerçek guard adıyla
   uyuşmuyor. Başlangıçta planlanan ad `EMT_MATH_VECTOR_H` idi. Bu değişiklik
   public API'yi etkilemez.
@@ -137,13 +137,13 @@ anlamlı bir test yazılamaz, yalnızca dokümante edilebilir.
 
 | İsim | Risk | Neden |
 |---|---|---|
-| `OK` | **Yüksek** | `<curses.h>`/ncurses `OK`'yi macro olarak tanımlar. Deneme: header'dan önce `#define OK 0` → derleme hatası ("expected identifier before numeric constant"). |
+| `VEC_OK` | **Yüksek** | `<curses.h>`/ncurses `VEC_OK`'yi macro olarak tanımlar. Deneme: header'dan önce `#define VEC_OK 0` → derleme hatası ("expected identifier before numeric constant"). |
 | `ERROR_*` | Orta | Bildiğim kadarıyla Windows `<winerror.h>` `ERROR_INVALID_STATE` dahil birçok `ERROR_*` macro'su tanımlar. Linux-first proje için acil değil, fakat "portable core" hedefiyle çelişiyor. |
-| `Vector`, `VectorStatus` | Orta-düşük | Linker çakışması yok (tipler TU-local), fakat `Vector` adını tanımlayan başka bir header ile compile-time çakışır. Grafik ve oyun kodunda yaygın bir isim. |
-| `initVector`, `destroyVector` | Düşük | External linkage: aynı sembolü tanımlayan başka bir kütüphaneyle linklendiğinde duplicate symbol hatası çıkar. |
+| `EmtVector`, `EmtVectorStatus` | Orta-düşük | Linker çakışması yok (tipler TU-local), fakat `EmtVector` adını tanımlayan başka bir header ile compile-time çakışır. Grafik ve oyun kodunda yaygın bir isim. |
+| `emt_vec_init`, `emt_vec_destroy` | Düşük | External linkage: aynı sembolü tanımlayan başka bir kütüphaneyle linklendiğinde duplicate symbol hatası çıkar. |
 | `VECTOR_H` (guard) | Orta | R1. |
 
-**Sadece stil tercihi olanlar (risk değil):** `initVector` (camelCase,
+**Sadece stil tercihi olanlar (risk değil):** `emt_vec_init` (camelCase,
 Java'ya yakın) ile `vector_init`/`emt_vector_init` (C ekosistemindeki snake_case
 + prefix geleneği) arasındaki seçim. Proje başlangıcında `emt_` prefix'i
 planlanmıştı, fakat bu kullanıcının kararı.

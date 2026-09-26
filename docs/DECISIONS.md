@@ -17,11 +17,11 @@ The implementation uses the C standard library; `libm` is allowed. External
 linear-algebra and physics libraries are not used. Development tools such as
 compilers, debuggers, sanitizers, and profilers are allowed.
 
-## D-003 — Vector ownership
+## D-003 — EmtVector ownership
 
 Status: accepted
 
-The caller owns the `Vector` struct. A live vector owns its heap buffer.
+The caller owns the `EmtVector` struct. A live vector owns its heap buffer.
 Initialization allocates the buffer; destruction frees the buffer and resets
 the struct. No central registry or pool is used for the linear-algebra layer.
 
@@ -36,7 +36,7 @@ size == 0
 data == NULL
 ```
 
-Caller-created vectors begin as `Vector vector = {0};`. A successful destroy
+Caller-created vectors begin as `EmtVector vector = {0};`. A successful destroy
 restores this state.
 
 ## D-005 — Library error reporting

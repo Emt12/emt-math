@@ -70,18 +70,18 @@ Goal: make one deliberate naming decision before the API expands.
 Review these current names:
 
 ```text
-Vector
-VectorStatus
-OK
+EmtVector
+EmtVectorStatus
+VEC_OK
 ERROR_NULL_PTR
-initVector
-destroyVector
+emt_vec_init
+emt_vec_destroy
 ```
 
 Questions to answer in notes:
 
-1. Could `OK` or `Vector` collide with another C header?
-2. Is the preferred function style `initVector` or `vector_init`?
+1. Could `VEC_OK` or `EmtVector` collide with another C header?
+2. Is the preferred function style `emt_vec_init` or `vector_init`?
 3. Should status constants be namespaced, for example `VECTOR_OK`?
 4. Is EMT-MATH intended as a small personal project or an includable public
    library?
@@ -162,7 +162,7 @@ values.
 Explain after implementation:
 
 - Why returning only `double` makes error reporting ambiguous.
-- Why `const Vector *` does not make the pointed-to allocation globally
+- Why `const EmtVector *` does not make the pointed-to allocation globally
   immutable forever; it restricts mutation through that access path.
 
 ## Session 5 — Fill operation
@@ -291,7 +291,7 @@ Later improvement, not required immediately: scaled sum-of-squares norm.
 - [ ] Test orthogonal, parallel, and zero-vector cases.
 - [ ] Explain the geometry rather than only the loop.
 
-## Session 13 — Vector milestone review
+## Session 13 — EmtVector milestone review
 
 - [ ] Run all tests.
 - [ ] Run sanitizer build.

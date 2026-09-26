@@ -48,7 +48,7 @@ Status: mostly complete
 The user can explain compilation versus linking, ownership of every allocation,
 and why an object must be initialized before its fields are read.
 
-## Phase 1 — Vector core
+## Phase 1 — EmtVector core
 
 Status: lifecycle complete; operations pending
 
@@ -74,17 +74,17 @@ Concepts:
 
 Deliverables:
 
-- [ ] Design getter and setter contracts.
-- [ ] Add an out-of-bounds status.
-- [ ] Decide whether getters use an output parameter.
-- [ ] Test first index, last index, and `index == size`.
-- [ ] Test null vector and null output pointer.
-- [ ] Decide and test zero-length behavior.
+- [+] Design getter and setter contracts.
+- [+] Add an out-of-bounds status.
+- [+] Decide whether getters use an output parameter.
+- [+] Test first index, last index, and `index == size`.
+- [+] Test null vector and null output pointer.
+- [+] Decide and test zero-length behavior.
 
 ### 1.3 Utility operations
 
-- [ ] Fill every element with one value.
-- [ ] Deep copy.
+- [+] Fill every element with one value.
+- [+] Deep copy.
 - [ ] Swap two vectors without allocation.
 - [ ] Optional resize only after its failure semantics are designed.
 
@@ -96,8 +96,8 @@ Important questions:
 
 ### 1.4 Arithmetic
 
-- [ ] Addition.
-- [ ] Subtraction.
+- [+] Addition.
+- [+] Subtraction.
 - [ ] Scalar multiplication.
 - [ ] Dot product.
 - [ ] Euclidean norm.
@@ -289,7 +289,7 @@ stronger than only comparing against one expected vector.
 The user can compare cost, reuse, and stability of elimination, LU, and explicit
 inverse computation.
 
-## Phase 5 — Vector spaces, rank, and orthogonality
+## Phase 5 — EmtVector spaces, rank, and orthogonality
 
 ### Mathematics
 
@@ -460,13 +460,13 @@ x(t+dt) = x(t) + v dt
 
 ### Math types
 
-- [ ] Fixed-size `Vec2`/`Vec3` types separate from dynamic `Vector`.
+- [ ] Fixed-size `Vec2`/`Vec3` types separate from dynamic `EmtVector`.
 - [ ] Fixed-size matrices where justified.
 - [ ] Rotation matrices.
 - [ ] Quaternion representation and normalization.
 - [ ] Explain gimbal lock and when quaternions help.
 
-Do not force the dynamic numerical `Vector` type into every real-time physics
+Do not force the dynamic numerical `EmtVector` type into every real-time physics
 calculation; fixed-size types have different performance and API needs.
 
 ### Collision
@@ -514,7 +514,7 @@ measured workload, a clear data partition, and tests for determinism/races.
 
 Useful public milestones, each with a focused README/demo:
 
-1. Vector library with ownership and tests.
+1. EmtVector library with ownership and tests.
 2. Matrix multiplication locality benchmark.
 3. Pivoted linear-system solver with residual analysis.
 4. QR/least-squares comparison on ill-conditioned data.

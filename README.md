@@ -25,7 +25,7 @@ analysis, and benchmarks.
 
 ## Current Status
 
-The project infrastructure and first vector milestone are in place. Vector
+The project infrastructure and first vector milestone are in place. EmtVector
 lifecycle management currently includes overflow-safe allocation, explicit
 zero initialization, destruction, empty-state restoration, and lifecycle
 tests. Bounded element access and mathematical vector operations are next.
@@ -47,7 +47,7 @@ The project will grow incrementally through the following areas:
 1. Vectors and matrices
 2. Linear systems and partial pivoting
 3. LU and QR decompositions
-4. Vector spaces, rank, and orthogonality
+4. EmtVector spaces, rank, and orthogonality
 5. Least-squares problems
 6. Eigenvalue algorithms
 7. Singular value decomposition and low-rank approximation

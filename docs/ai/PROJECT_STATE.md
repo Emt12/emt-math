@@ -12,45 +12,45 @@ engine.
 
 ## Current milestone
 
-Vector lifecycle is implemented and tested.
+EmtVector lifecycle is implemented and tested.
 
 Current public types and functions:
 
 ```c
 typedef enum {
-    OK = 0,
+    VEC_OK = 0,
     ERROR_NULL_PTR = -1,
     ERROR_INVALID_STATE = -2,
     ERROR_SIZE_OVERFLOW = -3,
     ERROR_ALLOCATION = -4
-} VectorStatus;
+} EmtVectorStatus;
 
 typedef struct {
     size_t size;
     double *data;
-} Vector;
+} EmtVector;
 
-VectorStatus initVector(Vector *vector, size_t size);
-void destroyVector(Vector *vector);
+EmtVectorStatus emt_vec_init(EmtVector *vector, size_t size);
+void emt_vec_destroy(EmtVector *vector);
 ```
 
-The public naming is not frozen. `Vector` was deliberately chosen by the user;
+The public naming is not frozen. `EmtVector` was deliberately chosen by the user;
 other names may be reviewed but must not be silently changed.
 
 ## Ownership model
 
-- The caller owns the `Vector` struct, normally on the stack.
+- The caller owns the `EmtVector` struct, normally on the stack.
 - The vector owns its heap-allocated `data` buffer.
-- A new vector is initialized as `Vector vector = {0};`.
-- `initVector` accepts only an empty vector.
-- `destroyVector` frees the buffer and restores the empty state.
+- A new vector is initialized as `EmtVector vector = {0};`.
+- `emt_vec_init` accepts only an empty vector.
+- `emt_vec_destroy` frees the buffer and restores the empty state.
 - There is no global memory manager or pool.
-- Shallow copying a live `Vector` is unsafe; a future copy operation must be a
+- Shallow copying a live `EmtVector` is unsafe; a future copy operation must be a
   deep copy.
 
 ## Lifecycle implementation
 
-`initVector` uses validate–prepare–commit:
+`emt_vec_init` uses validate–prepare–commit:
 
 - validates pointer and empty state;
 - handles requested size zero without allocation;
@@ -59,7 +59,7 @@ other names may be reviewed but must not be silently changed.
 - initializes elements to `0.0`;
 - commits fields only after success.
 
-`destroyVector` is null-safe and repeatable for a valid empty vector.
+`emt_vec_destroy` is null-safe and repeatable for a valid empty vector.
 
 ## Build
 
